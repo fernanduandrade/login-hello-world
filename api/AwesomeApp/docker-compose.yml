@@ -1,0 +1,6 @@
+﻿services:
+  awesomeapp.api:
+    image: awesomeapp.api
+    build:
+      context: .
+      dockerfile: AwesomeApp.API/Dockerfile

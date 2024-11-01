@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1F9E2A24-977A-48FF-B3EC-F7211A049EFA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{79CEEE52-16C0-4F8C-B45E-10474F921381}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AwesomeApp.API", "AwesomeApp.API\AwesomeApp.API.csproj", "{01F8093E-793A-4CB0-A031-89D7C9C61C00}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3D81CA8E-546C-4052-87D8-4FE4017A1782}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{01F8093E-793A-4CB0-A031-89D7C9C61C00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01F8093E-793A-4CB0-A031-89D7C9C61C00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01F8093E-793A-4CB0-A031-89D7C9C61C00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01F8093E-793A-4CB0-A031-89D7C9C61C00}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{01F8093E-793A-4CB0-A031-89D7C9C61C00} = {1F9E2A24-977A-48FF-B3EC-F7211A049EFA}
+	EndGlobalSection
+EndGlobal
