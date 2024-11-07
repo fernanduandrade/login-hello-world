@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using AwesomeApp.API.Contracts;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,4 +15,17 @@ public class UserRepository : IUserRepository
     
     public void Add(User user)
         => _dbSet.Add(user);
+
+    public IQueryable<User> Get(Expression<Func<User, bool>>? predicate = null, bool readOnly = false)
+    {
+        var query = _dbSet.AsQueryable();
+        
+        if(predicate is not null)
+            query = query.Where(predicate);
+        
+        if(readOnly)
+            query = query.AsNoTracking();
+        
+        return query;
+    }
 }

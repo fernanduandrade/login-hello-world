@@ -1,5 +1,20 @@
 import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
+import { createMemoryHistory, createRouter, RouteLocationNormalizedLoadedGeneric } from 'vue-router'
 
-createApp(App).mount('#app')
+const routes = [
+    { path: '/', name: 'Home', component: () => import('./views/Index.vue') },
+    { path: '/login', name: 'Login', component: () => import('./views/Login.vue') },
+    { 
+        path: '/auth/callback/', name: 'AuthCallback',
+        component: () => import('./views/AuthCallback.vue'),    
+        props: (route: RouteLocationNormalizedLoadedGeneric) => ({ provider: route.query.provider }) },
+]
+
+const router = createRouter({
+    history: createMemoryHistory(),
+    routes,
+})
+
+createApp(App).use(router).mount('#app')
