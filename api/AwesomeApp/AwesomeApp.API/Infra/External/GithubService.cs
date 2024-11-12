@@ -21,7 +21,7 @@ public class GithubService : IGithubService
     }
     public async Task<string> GetAccessToken(string code)
     {
-        string url = $"https://github.com/login/oauth/access_token?client_secret=0175aa8a03d269447f7c8df0326b9f51e0df6d31&client_id=Ov23liwDSsytRcy0KgYy&code={code}&redirect_uri=http://localhost:5173/auth/callback?provider=github";
+        string url = Environment.GetEnvironmentVariable("GITHUB_OAUTH2_TOKEN")!;
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         
         var response = await _httpClient.GetAsync(url);
@@ -38,11 +38,11 @@ public class GithubService : IGithubService
     public async Task<User> GetUser(string code)
     {
         var accessToken = await GetAccessToken(code);
-        string url = "https://api.github.com/user";
+        string url = $"{Environment.GetEnvironmentVariable("GITHUB_API")!}/user";
         
         _httpClient.DefaultRequestHeaders.Authorization 
             = new AuthenticationHeaderValue("Bearer",  accessToken);
-        _httpClient.DefaultRequestHeaders.Add("User-Agent", "Login-Hellow_World");
+        _httpClient.DefaultRequestHeaders.Add("User-Agent", Environment.GetEnvironmentVariable("GITHUB_AGENT")!);
         
         var response = await _httpClient.GetAsync(url);
         string content = await response.Content.ReadAsStringAsync();

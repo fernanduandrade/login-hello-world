@@ -8,13 +8,12 @@ namespace AwesomeApp.API.Infra.External;
 
 public interface IGoogleService
 {
-    Task<string> GetAccessToken(string code);
     Task<User> GetUser(string accessToken);
 }
 
 public class GoogleService() : IGoogleService
 {
-    public async Task<string> GetAccessToken(string code)
+    private async Task<string> GetAccessToken(string code)
     {
         var url = new Uri(Environment.GetEnvironmentVariable("GOOGLE_OAUTH2_TOKEN")!)
             .AddParameter("code", code)

@@ -1,12 +1,13 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using AwesomeApp.API.Contracts;
 
 namespace AwesomeApp.API.Infra.External;
 
 public interface IDiscordService
 {
-    Task<DiscordResponseDto> GetUserData(string accessToken);
+    Task<User> GetUser(string accessToken);
 }
 
 public class DiscordService :IDiscordService
@@ -18,17 +19,17 @@ public class DiscordService :IDiscordService
         _httpClient = httpClient;
         
     }
-    public async Task<DiscordResponseDto> GetUserData(string accessToken)
+    public async Task<User> GetUser(string accessToken)
     {
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         
         var response = await _httpClient.GetAsync($"");
-
         if (!response.IsSuccessStatusCode)
             return null;
         
-        string json = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<DiscordResponseDto>(json);
+        string jsonString = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<DiscordResponseDto>(jsonString);
+        return User.Create(result.UserName, result.Email);
     }
 }
 

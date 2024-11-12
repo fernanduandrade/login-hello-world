@@ -1,8 +1,9 @@
 using AwesomeApp.API.Contracts;
+using AwesomeApp.API.Shared;
 
 namespace AwesomeApp.API.Handlers;
 
 public interface ILoginProviderHandler
 {
-    Task<User> HandleLoginAsync(string token);
+    Task<Result<User, Error>> HandleLoginAsync(string token);
 }

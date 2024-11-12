@@ -44,36 +44,18 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapPost("/api/users/auth", async ([FromServices] IDiscordHandler discordHandler, [FromServices] IGithubHandler githubHandler, [FromServices] IGoogleHandler googleHandler ,LoginDto request) =>
-{
-    if (request.LoginProvider == LoginProvider.Discord)
+app.MapPost("/api/users/auth", async ([FromServices] LoginProviderFactory loginProviderFactory,LoginDto request) =>
     {
-        var user = await discordHandler.HandleLoginAsync(request.Token);
-        if (user is not null)
-            return Results.Ok(user);
+        var handler = loginProviderFactory.GetHandler(request.LoginProvider);
+        var result = await handler.HandleLoginAsync(request.Token);
         
-        return Results.Unauthorized();
-    }
-    
-    if (request.LoginProvider == LoginProvider.Github)
-    {
-        var user = await githubHandler.HandleLoginAsync(request.Token);
-        if (user is not null)
-            return Results.Ok(user);
-        
-        return Results.Unauthorized();
-    }
+        if(result.IsFailure)
+            return Results.BadRequest(result.Error);
 
-    if (request.LoginProvider == LoginProvider.Google)
-    {
-        var user = await googleHandler.HandleLoginAsync(request.Token);
-        if (user is not null)
-            return Results.Ok(user);
-        
-        return Results.Unauthorized();
-    }
-    return Results.Unauthorized();
-})
+        return Results.Ok(result.Value);
+
+
+    })
 .WithName("Auth")
 .WithOpenApi();
 

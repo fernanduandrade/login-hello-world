@@ -2,9 +2,7 @@ using AwesomeApp.API.Handlers;
 using AwesomeApp.API.Infra.Data;
 using AwesomeApp.API.Infra.Data.Repositories;
 using AwesomeApp.API.Infra.External;
-using Polly;
-using Polly.CircuitBreaker;
-using Polly.Extensions.Http;
+using AwesomeApp.API.Shared;
 
 namespace AwesomeApp.API.Setup;
 
@@ -12,39 +10,27 @@ public static class DependecyInjection
 {
     public static void InjectDependencies(this IServiceCollection services)
     {
-        var policyRetry = 
-        
+        // Persistence
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-        services.AddScoped<IDiscordHandler, DiscordHandler>();
         
+        // Factories
+        services.AddScoped<LoginProviderFactory>();
+        
+        // handlers
+        services.AddScoped<ILoginProviderHandler, DiscordHandler>();
+        services.AddScoped<ILoginProviderHandler, GithubHandle>();
+        services.AddScoped<ILoginProviderHandler, GoogleHandler>();
+
+        // external
+        services.AddScoped<IGoogleService, GoogleService>();
+        services.AddScoped<IGithubService, GithubService>();
         services.AddHttpClient<IDiscordService, DiscordService>(opt =>
             {
-                opt.BaseAddress = new Uri("https://discord.com/api/users/@me");
+                opt.BaseAddress = new Uri(Environment.GetEnvironmentVariable("DISCORD_API")!);
             })
-            .AddPolicyHandler(GetRetryPolicy())
-            .AddPolicyHandler(GetCircuitBreakerPolicy());
+            .AddPolicyHandler(Resiliency.GetRetryPolicy())
+            .AddPolicyHandler(Resiliency.GetCircuitBreakerPolicy());
 
-        services.AddScoped<IGithubService, GithubService>();
-        services.AddScoped<IGithubHandler, GithubHandle>();
-        services.AddScoped<IGoogleHandler, GoogleHandler>();
-        services.AddScoped<IGoogleService, GoogleService>();
-
-    }
-    
-    static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
-    {
-        return HttpPolicyExtensions
-            .HandleTransientHttpError()
-            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2,
-                retryAttempt)));
-    }
-    
-    static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy()
-    {
-        return HttpPolicyExtensions
-            .HandleTransientHttpError()
-            .CircuitBreakerAsync(5, TimeSpan.FromSeconds(30));
     }
 }
