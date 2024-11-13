@@ -18,7 +18,7 @@ public class GoogleService() : IGoogleService
         var url = new Uri(Environment.GetEnvironmentVariable("GOOGLE_OAUTH2_TOKEN")!)
             .AddParameter("code", code)
             .AddParameter("grant_type", "authorization_code")
-            .AddParameter("redirect_uri", Environment.GetEnvironmentVariable("GOOGLE_DNS_REDIRECT")!)
+            .AddParameter("redirect_uri", Environment.GetEnvironmentVariable("GOOGLE_REIDRECT_DNS")!)
             .AddParameter("client_secret", Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET")!)
             .AddParameter("client_id", Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID")!);
 
@@ -37,7 +37,7 @@ public class GoogleService() : IGoogleService
         var bearer = await GetAccessToken(code);
         var client = new HttpClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearer);
-        var response = await client.GetAsync(Environment.GetEnvironmentVariable("GOOGLE_API")!);
+        var response = await client.GetAsync(Environment.GetEnvironmentVariable("GOOGLE_OAUTH2_API")!);
         var responseString = await response.Content.ReadAsStringAsync();
 
         if (!response.IsSuccessStatusCode)

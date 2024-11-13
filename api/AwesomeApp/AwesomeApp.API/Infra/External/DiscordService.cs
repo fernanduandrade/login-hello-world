@@ -10,20 +10,13 @@ public interface IDiscordService
     Task<User> GetUser(string accessToken);
 }
 
-public class DiscordService :IDiscordService
+public class DiscordService(HttpClient httpClient) : IDiscordService
 {
-    private readonly HttpClient _httpClient;
-
-    public DiscordService(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-        
-    }
     public async Task<User> GetUser(string accessToken)
     {
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         
-        var response = await _httpClient.GetAsync($"");
+        var response = await httpClient.GetAsync($"");
         if (!response.IsSuccessStatusCode)
             return null;
         

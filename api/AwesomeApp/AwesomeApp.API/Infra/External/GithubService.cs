@@ -21,7 +21,7 @@ public class GithubService : IGithubService
     }
     public async Task<string> GetAccessToken(string code)
     {
-        string url = Environment.GetEnvironmentVariable("GITHUB_OAUTH2_TOKEN")!;
+        string url = Environment.GetEnvironmentVariable("GITHUB_OAUTH2_TOKEN")!.Replace("Code", code);
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         
         var response = await _httpClient.GetAsync(url);
